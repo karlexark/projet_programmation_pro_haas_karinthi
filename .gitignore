@@ -1,0 +1,19 @@
+# Gradle
+.gradle/
+build/
+!gradle/wrapper/gradle-wrapper.jar
+
+# IDE
+.idea/
+*.iml
+.vscode/
+bin/
+out/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Config locale (adresse de la VM, etc.)
+application-local.properties
+.env
