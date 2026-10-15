@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Décrire une image</title>
     <link rel="stylesheet" href="style.css">
+    <script src="voix.js" defer></script>
     <script src="app.js" defer></script>
 </head>
 <body>
@@ -33,6 +34,15 @@
             </p>
         </div>
 
+        <div class="champ case">
+            <input id="lecture-auto" type="checkbox" checked aria-describedby="aide-lecture">
+            <label for="lecture-auto">Lire automatiquement la description à voix haute</label>
+            <p id="aide-lecture" class="aide">
+                Si vous utilisez déjà un lecteur d'écran, vous pouvez décocher cette case :
+                il annoncera la description lui-même.
+            </p>
+        </div>
+
         <button id="decrire" type="submit">Décrire l'image</button>
     </form>
 
@@ -42,6 +52,12 @@
     <section aria-labelledby="titre-description">
         <h2 id="titre-description">Description</h2>
         <div id="description" class="description" aria-live="polite"></div>
+        <div id="actions" class="actions" hidden>
+            <button id="relire" type="button" class="secondaire">Relire la description</button>
+            <button id="arreter" type="button" class="secondaire">Arrêter la lecture</button>
+            <button id="nouvelle" type="button" class="secondaire">Nouvelle image</button>
+        </div>
+        <p class="aide">Touche Échap : arrêter la lecture à tout moment.</p>
         <img id="apercu" class="apercu" alt="" hidden>
     </section>
 </main>
