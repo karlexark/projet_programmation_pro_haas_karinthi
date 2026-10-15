@@ -1,4 +1,4 @@
-package fr.troisil.audiodescription.agent.ollama;
+package fr.troisil.audiodescription.agent.langchain4j;
 
 /**
  * Les textes envoyés au modèle : son rôle (message système) et la demande (message utilisateur).

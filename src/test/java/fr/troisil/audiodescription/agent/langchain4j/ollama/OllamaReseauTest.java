@@ -1,10 +1,11 @@
-package fr.troisil.audiodescription.agent.ollama;
+package fr.troisil.audiodescription.agent.langchain4j.ollama;
 
 import com.sun.net.httpserver.HttpServer;
 import fr.troisil.audiodescription.agent.Description;
 import fr.troisil.audiodescription.agent.DescriptionImpossibleException;
 import fr.troisil.audiodescription.agent.DescriptionImpossibleException.Raison;
 import fr.troisil.audiodescription.agent.Image;
+import fr.troisil.audiodescription.agent.langchain4j.DescripteurLangChain4j;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
@@ -27,7 +28,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
  * bibliothèque (connexion refusée, délai, modèle absent) sont bien classées : son
  * comportement change d'une version à l'autre.
  */
-class OllamaDescripteurReseauTest {
+class OllamaReseauTest {
 
     private static final byte[] OCTETS = {(byte) 0x89, 'P', 'N', 'G', 1, 2, 3};
     private static final Image IMAGE = new Image(OCTETS, "image/png");
@@ -108,11 +109,11 @@ class OllamaDescripteurReseauTest {
         return "http://localhost:" + serveur.getAddress().getPort();
     }
 
-    private static OllamaDescripteur descripteur(String url, Duration delai) {
-        return new OllamaDescripteur(new OllamaConfiguration().modeleOllama(url, "test", delai));
+    private static DescripteurLangChain4j descripteur(String url, Duration delai) {
+        return new DescripteurLangChain4j(new OllamaConfiguration().modeleOllama(url, "test", delai));
     }
 
-    private static void assertEchec(OllamaDescripteur descripteur, Raison raisonAttendue) {
+    private static void assertEchec(DescripteurLangChain4j descripteur, Raison raisonAttendue) {
         assertThatThrownBy(() -> descripteur.decrire(IMAGE, null))
                 .isInstanceOf(DescriptionImpossibleException.class)
                 .extracting(e -> ((DescriptionImpossibleException) e).getRaison())

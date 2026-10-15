@@ -5,7 +5,7 @@ import fr.troisil.audiodescription.agent.Description;
 import fr.troisil.audiodescription.agent.DescriptionImpossibleException;
 import fr.troisil.audiodescription.agent.Image;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Profile;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
 import java.time.Duration;
@@ -16,7 +16,7 @@ import java.util.Objects;
  * <p>
  * Elle renvoie une réponse fixe et prévisible. Elle sert à développer la page,
  * à tester le contrôleur et à faire la démonstration sur un poste sans modèle.
- * Elle est active avec le profil Spring {@code faux}.
+ * Elle est active quand {@code descripteur.fournisseur=faux}, ce que fait le profil Spring {@code faux}.
  * <p>
  * Deux propriétés permettent de simuler le comportement d'un vrai modèle :
  * <ul>
@@ -27,7 +27,7 @@ import java.util.Objects;
  * </ul>
  */
 @Component
-@Profile("faux")
+@ConditionalOnProperty(name = "descripteur.fournisseur", havingValue = "faux")
 public class FauxDescripteur implements DescripteurImage {
 
     static final String DESCRIPTION_FIXE =
