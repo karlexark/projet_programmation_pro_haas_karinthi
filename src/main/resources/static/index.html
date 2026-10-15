@@ -4,10 +4,62 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Décrire une image</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="voix.js" defer></script>
+    <script src="app.js" defer></script>
 </head>
 <body>
 <main>
     <h1>Décrire une image</h1>
+    <p>
+        Choisissez une image sur votre appareil. Vous pouvez aussi poser une question à son sujet.
+        L'application vous décrit son contenu.
+    </p>
+
+    <form id="formulaire" novalidate>
+        <div class="champ">
+            <label for="image">Image à décrire</label>
+            <input id="image" name="image" type="file" accept="image/jpeg,image/png"
+                   aria-describedby="aide-image">
+            <p id="aide-image" class="aide">Format JPEG ou PNG, 10 mégaoctets au maximum.</p>
+        </div>
+
+        <div class="champ">
+            <label for="question">Votre question sur l'image (facultatif)</label>
+            <textarea id="question" name="question" rows="3" maxlength="500"
+                      aria-describedby="aide-question"></textarea>
+            <p id="aide-question" class="aide">
+                Par exemple : « Quelle est la date de péremption ? ».
+                Sans question, vous obtenez une description générale.
+            </p>
+        </div>
+
+        <div class="champ case">
+            <input id="lecture-auto" type="checkbox" checked aria-describedby="aide-lecture">
+            <label for="lecture-auto">Lire automatiquement la description à voix haute</label>
+            <p id="aide-lecture" class="aide">
+                Si vous utilisez déjà un lecteur d'écran, vous pouvez décocher cette case :
+                il annoncera la description lui-même.
+            </p>
+        </div>
+
+        <button id="decrire" type="submit">Décrire l'image</button>
+    </form>
+
+    <p id="etat" class="etat" role="status" aria-live="polite"></p>
+    <div id="erreur" class="erreur" role="alert"></div>
+
+    <section aria-labelledby="titre-description">
+        <h2 id="titre-description">Description</h2>
+        <div id="description" class="description" aria-live="polite"></div>
+        <div id="actions" class="actions" hidden>
+            <button id="relire" type="button" class="secondaire">Relire la description</button>
+            <button id="arreter" type="button" class="secondaire">Arrêter la lecture</button>
+            <button id="nouvelle" type="button" class="secondaire">Nouvelle image</button>
+        </div>
+        <p class="aide">Touche Échap : arrêter la lecture à tout moment.</p>
+        <img id="apercu" class="apercu" alt="" hidden>
+    </section>
 </main>
 </body>
 </html>
