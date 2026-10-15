@@ -110,7 +110,7 @@ class OllamaReseauTest {
     }
 
     private static DescripteurLangChain4j descripteur(String url, Duration delai) {
-        return new DescripteurLangChain4j(new OllamaConfiguration().modeleOllama(url, "test", delai));
+        return new DescripteurLangChain4j(new OllamaConfiguration().modeleOllama(url, "test", delai, 0.1));
     }
 
     private static void assertEchec(DescripteurLangChain4j descripteur, Raison raisonAttendue) {

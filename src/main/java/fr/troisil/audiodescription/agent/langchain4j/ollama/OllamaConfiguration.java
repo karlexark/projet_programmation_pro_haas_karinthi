@@ -26,11 +26,13 @@ public class OllamaConfiguration {
     public ChatModel modeleOllama(
             @Value("${descripteur.ollama.url}") String url,
             @Value("${descripteur.ollama.modele}") String modele,
-            @Value("${descripteur.ollama.timeout}") Duration delai) {
+            @Value("${descripteur.ollama.timeout}") Duration delai,
+            @Value("${descripteur.ollama.temperature}") double temperature) {
         return OllamaChatModel.builder()
                 .baseUrl(url)
                 .modelName(modele)
                 .timeout(delai)
+                .temperature(temperature)
                 // Pas de nouvel essai automatique : avec un modèle lent, l'utilisateur
                 // attendrait plusieurs fois le délai avant d'être prévenu.
                 .maxRetries(0)
