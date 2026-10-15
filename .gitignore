@@ -17,3 +17,6 @@ Thumbs.db
 # Config locale (adresse de la VM, etc.)
 application-local.properties
 .env
+
+# Images de test locales (non versionnees)
+image_test/

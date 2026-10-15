@@ -1,4 +1,4 @@
-package fr.troisil.audiodescription.agent.ollama;
+package fr.troisil.audiodescription.agent.langchain4j;
 
 import dev.langchain4j.data.message.AiMessage;
 import dev.langchain4j.data.message.ChatMessage;
@@ -6,7 +6,9 @@ import dev.langchain4j.data.message.ImageContent;
 import dev.langchain4j.data.message.SystemMessage;
 import dev.langchain4j.data.message.TextContent;
 import dev.langchain4j.data.message.UserMessage;
+import dev.langchain4j.exception.AuthenticationException;
 import dev.langchain4j.exception.LangChain4jException;
+import dev.langchain4j.exception.RateLimitException;
 import dev.langchain4j.exception.TimeoutException;
 import dev.langchain4j.model.chat.ChatModel;
 import dev.langchain4j.model.chat.response.ChatResponse;
@@ -30,13 +32,13 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-class OllamaDescripteurTest {
+class DescripteurLangChain4jTest {
 
     private static final byte[] OCTETS = {(byte) 0xFF, (byte) 0xD8, (byte) 0xFF, 1, 2};
     private static final Image IMAGE = new Image(OCTETS, "image/jpeg");
 
     private final ChatModel modele = mock(ChatModel.class);
-    private final OllamaDescripteur descripteur = new OllamaDescripteur(modele);
+    private final DescripteurLangChain4j descripteur = new DescripteurLangChain4j(modele);
 
     @Test
     void renvoieLeTexteDuModele() throws DescriptionImpossibleException {
@@ -86,6 +88,20 @@ class OllamaDescripteurTest {
     void unModeleArreteRendLAgentIndisponible() {
         when(modele.chat(anyList()))
                 .thenThrow(new LangChain4jException("échec", new ConnectException("Connection refused")));
+
+        assertEchec(Raison.AGENT_INDISPONIBLE);
+    }
+
+    @Test
+    void uneCleRefuseeParUnServiceEnLigneRendLAgentIndisponible() {
+        when(modele.chat(anyList())).thenThrow(new AuthenticationException("clé invalide"));
+
+        assertEchec(Raison.AGENT_INDISPONIBLE);
+    }
+
+    @Test
+    void unQuotaAtteintRendLAgentIndisponible() {
+        when(modele.chat(anyList())).thenThrow(new RateLimitException("trop de requêtes"));
 
         assertEchec(Raison.AGENT_INDISPONIBLE);
     }

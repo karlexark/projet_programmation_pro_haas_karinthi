@@ -1,12 +1,14 @@
-package fr.troisil.audiodescription.agent.ollama;
+package fr.troisil.audiodescription.agent.langchain4j;
 
 import dev.langchain4j.data.message.ChatMessage;
 import dev.langchain4j.data.message.ImageContent;
 import dev.langchain4j.data.message.SystemMessage;
 import dev.langchain4j.data.message.TextContent;
 import dev.langchain4j.data.message.UserMessage;
+import dev.langchain4j.exception.AuthenticationException;
 import dev.langchain4j.exception.InternalServerException;
 import dev.langchain4j.exception.ModelNotFoundException;
+import dev.langchain4j.exception.RateLimitException;
 import dev.langchain4j.exception.TimeoutException;
 import dev.langchain4j.exception.UnresolvedModelServerException;
 import dev.langchain4j.model.chat.ChatModel;
@@ -16,8 +18,6 @@ import fr.troisil.audiodescription.agent.Description;
 import fr.troisil.audiodescription.agent.DescriptionImpossibleException;
 import fr.troisil.audiodescription.agent.DescriptionImpossibleException.Raison;
 import fr.troisil.audiodescription.agent.Image;
-import org.springframework.context.annotation.Profile;
-import org.springframework.stereotype.Component;
 
 import java.net.ConnectException;
 import java.net.SocketTimeoutException;
@@ -28,23 +28,21 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * Implémentation de {@link DescripteurImage} qui interroge un modèle de vision
- * servi par Ollama, à travers LangChain4J.
+ * Implémentation de {@link DescripteurImage} qui interroge un modèle de vision à travers LangChain4J.
  * <p>
  * C'est un <em>adaptateur</em> : il traduit les types de l'application ({@link Image},
  * {@link Description}) en messages LangChain4J, et les erreurs de la bibliothèque en
  * {@link DescriptionImpossibleException}. Aucune classe de LangChain4J ne sort de ce package.
  * <p>
- * Le modèle ({@link ChatModel}) est fourni par {@link OllamaConfiguration} ; il est
- * reçu par le constructeur, ce qui permet de le remplacer par un modèle simulé dans les tests.
+ * Il ne dépend d'aucun fournisseur : il reçoit un {@link ChatModel}, construit par la
+ * configuration du fournisseur choisi (Ollama aujourd'hui, un autre demain). Ajouter un
+ * fournisseur revient à écrire une configuration, sans modifier cette classe.
  */
-@Component
-@Profile("!faux")
-public class OllamaDescripteur implements DescripteurImage {
+public class DescripteurLangChain4j implements DescripteurImage {
 
     private final ChatModel modele;
 
-    public OllamaDescripteur(ChatModel modele) {
+    public DescripteurLangChain4j(ChatModel modele) {
         this.modele = Objects.requireNonNull(modele, "modele");
     }
 
@@ -92,7 +90,10 @@ public class OllamaDescripteur implements DescripteurImage {
                     || cause instanceof UnresolvedModelServerException
                     || cause instanceof UnresolvedAddressException
                     || cause instanceof ModelNotFoundException
-                    || cause instanceof InternalServerException) {
+                    || cause instanceof InternalServerException
+                    // Erreurs propres aux services en ligne (clé refusée, quota atteint).
+                    || cause instanceof AuthenticationException
+                    || cause instanceof RateLimitException) {
                 return Raison.AGENT_INDISPONIBLE;
             }
         }
