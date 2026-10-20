@@ -28,6 +28,7 @@ const apercu = document.getElementById("apercu");
 
 let analyseEnCours = false;
 let derniereDescription = "";
+let minuterieAnnonce;
 
 initialiserLectureAuto();
 
@@ -47,7 +48,15 @@ formulaire.addEventListener("submit", async (evenement) => {
 
 champImage.addEventListener("change", () => {
     effacerErreur();
-    afficherApercu(champImage.files[0]);
+    const fichier = champImage.files[0];
+    afficherApercu(fichier);
+    // Au retour de la fenêtre de choix, certains lecteurs d'écran relisent l'ancien état
+    // du sélecteur (« aucun fichier choisi ») : la page annonce donc elle-même le choix.
+    const message = fichier
+        ? `Image ${fichier.name} choisie. Vous pouvez écrire une question, puis lancer la description.`
+        : "Aucune image choisie.";
+    annoncer(message);
+    parler(message);
 });
 
 boutonRelire.addEventListener("click", () => Voix.lire(derniereDescription));
@@ -109,7 +118,7 @@ function commencerAttente() {
     derniereDescription = "";
     bouton.setAttribute("aria-disabled", "true");
     formulaire.setAttribute("aria-busy", "true");
-    zoneEtat.textContent = MESSAGE_ATTENTE;
+    annoncer(MESSAGE_ATTENTE);
     parler(MESSAGE_ATTENTE);
 }
 
@@ -117,7 +126,7 @@ function terminerAttente() {
     analyseEnCours = false;
     bouton.removeAttribute("aria-disabled");
     formulaire.removeAttribute("aria-busy");
-    zoneEtat.textContent = "";
+    effacerAnnonce();
 }
 
 function afficherDescription(texte) {
@@ -130,6 +139,23 @@ function afficherDescription(texte) {
     boutonRelire.hidden = !Voix.estDisponible();
     boutonArreter.hidden = !Voix.estDisponible();
     parler(texte);
+}
+
+/**
+ * Écrit un message dans la zone d'état, que le lecteur d'écran annonce.
+ * La zone est vidée puis remplie un instant plus tard : un même message répété
+ * (la même image choisie deux fois) est ainsi annoncé de nouveau.
+ */
+function annoncer(message) {
+    effacerAnnonce();
+    minuterieAnnonce = setTimeout(() => {
+        zoneEtat.textContent = message;
+    }, 100);
+}
+
+function effacerAnnonce() {
+    clearTimeout(minuterieAnnonce);
+    zoneEtat.textContent = "";
 }
 
 function afficherErreur(message) {
@@ -151,6 +177,7 @@ function recommencer() {
     zoneActions.hidden = true;
     derniereDescription = "";
     effacerErreur();
+    effacerAnnonce();
     champImage.focus();
 }
 

@@ -150,9 +150,17 @@ button[aria-disabled="true"] {
     outline-offset: 3px;
 }
 
+/*
+ * Une zone annoncée par le lecteur d'écran (aria-live, role="status" ou "alert") ne doit jamais
+ * être masquée par display: none, sinon elle disparaît pour lui et son contenu n'est pas annoncé.
+ * Vide, elle reste présente : on enlève seulement son cadre.
+ */
 .etat:empty,
 .erreur:empty {
-    display: none;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: none;
 }
 
 .etat {
