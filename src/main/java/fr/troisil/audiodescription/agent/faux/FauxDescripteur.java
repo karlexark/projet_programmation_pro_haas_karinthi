@@ -28,7 +28,7 @@ import java.util.Objects;
  */
 @Component
 @ConditionalOnProperty(name = "descripteur.fournisseur", havingValue = "faux")
-public class FauxDescripteur implements DescripteurImage {
+public final class FauxDescripteur implements DescripteurImage {
 
     static final String DESCRIPTION_FIXE =
             "Ceci est une description de démonstration. "

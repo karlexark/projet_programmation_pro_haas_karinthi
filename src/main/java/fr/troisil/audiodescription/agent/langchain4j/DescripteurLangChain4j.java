@@ -38,7 +38,7 @@ import java.util.Objects;
  * configuration du fournisseur choisi (Ollama aujourd'hui, un autre demain). Ajouter un
  * fournisseur revient à écrire une configuration, sans modifier cette classe.
  */
-public class DescripteurLangChain4j implements DescripteurImage {
+public final class DescripteurLangChain4j implements DescripteurImage {
 
     private final ChatModel modele;
 

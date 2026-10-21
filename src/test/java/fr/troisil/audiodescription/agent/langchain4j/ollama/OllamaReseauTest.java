@@ -43,7 +43,7 @@ class OllamaReseauTest {
     }
 
     @Test
-    void envoieLImageEtLitLaReponseDOllama() throws Exception {
+    void envoieLImageEtLitLaReponseDOllama() throws IOException, DescriptionImpossibleException {
         AtomicReference<String> requete = new AtomicReference<>();
         String url = demarrerServeur(200, """
                 {"model":"test","created_at":"2026-10-15T10:00:00Z",

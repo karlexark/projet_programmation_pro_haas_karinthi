@@ -6,7 +6,7 @@ package fr.troisil.audiodescription.web;
  * Comme {@link ImageRefuseeException}, c'est une exception non vérifiée : elle traduit
  * une entrée invalide, rattrapée à un seul endroit pour être transformée en message.
  */
-public class QuestionTropLongueException extends RuntimeException {
+public final class QuestionTropLongueException extends RuntimeException {
 
     private final int longueurMaximale;
 

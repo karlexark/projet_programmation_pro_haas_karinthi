@@ -9,7 +9,7 @@ import java.util.Objects;
  * détectée à la frontière de l'application, et n'est rattrapée qu'à un seul
  * endroit, là où elle est transformée en message pour l'utilisateur.
  */
-public class ImageRefuseeException extends RuntimeException {
+public final class ImageRefuseeException extends RuntimeException {
 
     /** La raison du refus, pour choisir le message à donner à l'utilisateur. */
     public enum Motif {

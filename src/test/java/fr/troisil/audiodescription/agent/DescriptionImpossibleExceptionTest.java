@@ -30,7 +30,9 @@ class DescriptionImpossibleExceptionTest {
 
     @Test
     void refuseUneRaisonNulle() {
-        assertThatThrownBy(() -> new DescriptionImpossibleException(null, "message"))
-                .isInstanceOf(NullPointerException.class);
+        // C'est la construction elle-même qui doit échouer, avant que l'exception soit lancée.
+        assertThatThrownBy(() -> {
+            throw new DescriptionImpossibleException(null, "message");
+        }).isInstanceOf(NullPointerException.class);
     }
 }
