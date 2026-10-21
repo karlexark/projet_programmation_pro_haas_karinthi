@@ -9,7 +9,7 @@ import java.util.Objects;
  * C'est une exception <em>vérifiée</em> : ces échecs sont prévisibles et
  * l'appelant doit obligatoirement prévoir quoi dire à l'utilisateur.
  */
-public class DescriptionImpossibleException extends Exception {
+public final class DescriptionImpossibleException extends Exception {
 
     /**
      * La cause de l'échec, exprimée sans référence au fournisseur,

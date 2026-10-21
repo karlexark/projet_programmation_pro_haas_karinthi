@@ -33,6 +33,13 @@ final class Consigne {
             Donne ensuite les détails les plus utiles, puis cite le texte visible s'il y en a.\
             """;
 
+    /** Les instructions qui suivent la question de l'utilisateur. */
+    static final String REPONSE_A_LA_QUESTION = """
+            Réponds à cette question en une ou deux phrases, à partir de ce que montre l'image. \
+            Ne décris pas le reste de l'image. \
+            Si l'image ne permet pas de répondre avec certitude, dis-le simplement.\
+            """;
+
     private Consigne() {
     }
 
@@ -44,11 +51,9 @@ final class Consigne {
         if (question == null || question.isBlank()) {
             return DESCRIPTION_GENERALE;
         }
-        return """
-                Question de l'utilisateur sur cette image : « %s »
-                Réponds à cette question en une ou deux phrases, à partir de ce que montre l'image. \
-                Ne décris pas le reste de l'image. \
-                Si l'image ne permet pas de répondre avec certitude, dis-le simplement.\
-                """.formatted(question.strip());
+        // Concaténation plutôt que String.format : la question de l'utilisateur n'est jamais
+        // interprétée comme un format, et le saut de ligne reste "\n" sur tous les systèmes.
+        return "Question de l'utilisateur sur cette image : « " + question.strip() + " »\n"
+                + REPONSE_A_LA_QUESTION;
     }
 }
