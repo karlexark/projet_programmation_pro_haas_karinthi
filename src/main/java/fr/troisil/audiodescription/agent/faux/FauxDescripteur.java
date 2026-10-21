@@ -4,12 +4,11 @@ import fr.troisil.audiodescription.agent.DescripteurImage;
 import fr.troisil.audiodescription.agent.Description;
 import fr.troisil.audiodescription.agent.DescriptionImpossibleException;
 import fr.troisil.audiodescription.agent.Image;
+import java.time.Duration;
+import java.util.Objects;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
-
-import java.time.Duration;
-import java.util.Objects;
 
 /**
  * Fausse implémentation de {@link DescripteurImage}, qui n'appelle aucun modèle.
@@ -30,9 +29,9 @@ import java.util.Objects;
 @ConditionalOnProperty(name = "descripteur.fournisseur", havingValue = "faux")
 public final class FauxDescripteur implements DescripteurImage {
 
-    static final String DESCRIPTION_FIXE =
-            "Ceci est une description de démonstration. "
-                    + "L'image n'a pas été analysée : l'application fonctionne sans modèle d'intelligence artificielle.";
+    static final String DESCRIPTION_FIXE = "Ceci est une description de démonstration. "
+            + "L'image n'a pas été analysée : "
+            + "l'application fonctionne sans modèle d'intelligence artificielle.";
 
     private final Duration delai;
     private final DescriptionImpossibleException.Raison echec;

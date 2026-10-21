@@ -1,22 +1,21 @@
 package fr.troisil.audiodescription.agent.faux;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
 import fr.troisil.audiodescription.agent.Description;
 import fr.troisil.audiodescription.agent.DescriptionImpossibleException;
 import fr.troisil.audiodescription.agent.DescriptionImpossibleException.Raison;
 import fr.troisil.audiodescription.agent.Image;
+import java.time.Duration;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
 
-import java.time.Duration;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-
 class FauxDescripteurTest {
 
-    private static final Image IMAGE = new Image(new byte[]{1, 2, 3}, "image/png");
+    private static final Image IMAGE = new Image(new byte[] {1, 2, 3}, "image/png");
 
     private final FauxDescripteur descripteur = new FauxDescripteur(Duration.ZERO, null);
 
@@ -38,8 +37,7 @@ class FauxDescripteurTest {
 
     @Test
     void refuseUneImageNulle() {
-        assertThatThrownBy(() -> descripteur.decrire(null, null))
-                .isInstanceOf(NullPointerException.class);
+        assertThatThrownBy(() -> descripteur.decrire(null, null)).isInstanceOf(NullPointerException.class);
     }
 
     @Test

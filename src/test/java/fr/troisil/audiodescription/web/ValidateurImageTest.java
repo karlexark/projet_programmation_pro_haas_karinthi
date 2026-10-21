@@ -1,15 +1,15 @@
 package fr.troisil.audiodescription.web;
 
-import fr.troisil.audiodescription.agent.Image;
-import fr.troisil.audiodescription.web.ImageRefuseeException.Motif;
-import org.junit.jupiter.api.Test;
-import org.springframework.mock.web.MockMultipartFile;
-
 import static fr.troisil.audiodescription.web.ImagesDeTest.JPEG;
 import static fr.troisil.audiodescription.web.ImagesDeTest.PNG;
 import static fr.troisil.audiodescription.web.ImagesDeTest.TEXTE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
+import fr.troisil.audiodescription.agent.Image;
+import fr.troisil.audiodescription.web.ImageRefuseeException.Motif;
+import org.junit.jupiter.api.Test;
+import org.springframework.mock.web.MockMultipartFile;
 
 class ValidateurImageTest {
 

@@ -9,6 +9,5 @@ final class ImagesDeTest {
     static final byte[] PNG = {(byte) 0x89, 'P', 'N', 'G', '\r', '\n', 0x1A, '\n', 0, 0};
     static final byte[] TEXTE = "ceci n'est pas une image".getBytes(StandardCharsets.UTF_8);
 
-    private ImagesDeTest() {
-    }
+    private ImagesDeTest() {}
 }

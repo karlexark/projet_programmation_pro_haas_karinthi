@@ -40,8 +40,7 @@ final class Consigne {
             Si l'image ne permet pas de répondre avec certitude, dis-le simplement.\
             """;
 
-    private Consigne() {
-    }
+    private Consigne() {}
 
     /**
      * @param question la question de l'utilisateur, ou null pour une description générale
@@ -53,7 +52,6 @@ final class Consigne {
         }
         // Concaténation plutôt que String.format : la question de l'utilisateur n'est jamais
         // interprétée comme un format, et le saut de ligne reste "\n" sur tous les systèmes.
-        return "Question de l'utilisateur sur cette image : « " + question.strip() + " »\n"
-                + REPONSE_A_LA_QUESTION;
+        return "Question de l'utilisateur sur cette image : « " + question.strip() + " »\n" + REPONSE_A_LA_QUESTION;
     }
 }

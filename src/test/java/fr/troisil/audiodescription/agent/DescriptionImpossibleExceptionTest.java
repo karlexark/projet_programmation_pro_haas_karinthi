@@ -1,20 +1,21 @@
 package fr.troisil.audiodescription.agent;
 
-import fr.troisil.audiodescription.agent.DescriptionImpossibleException.Raison;
-import org.junit.jupiter.api.Test;
-
-import java.net.ConnectException;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
+import fr.troisil.audiodescription.agent.DescriptionImpossibleException.Raison;
+import java.net.ConnectException;
+import org.junit.jupiter.api.Test;
 
 class DescriptionImpossibleExceptionTest {
 
     @Test
     void estUneExceptionVerifiee() {
         // Vérifiée = sous-classe d'Exception, mais pas de RuntimeException.
-        assertThat(Exception.class.isAssignableFrom(DescriptionImpossibleException.class)).isTrue();
-        assertThat(RuntimeException.class.isAssignableFrom(DescriptionImpossibleException.class)).isFalse();
+        assertThat(Exception.class.isAssignableFrom(DescriptionImpossibleException.class))
+                .isTrue();
+        assertThat(RuntimeException.class.isAssignableFrom(DescriptionImpossibleException.class))
+                .isFalse();
     }
 
     @Test
@@ -32,7 +33,8 @@ class DescriptionImpossibleExceptionTest {
     void refuseUneRaisonNulle() {
         // C'est la construction elle-même qui doit échouer, avant que l'exception soit lancée.
         assertThatThrownBy(() -> {
-            throw new DescriptionImpossibleException(null, "message");
-        }).isInstanceOf(NullPointerException.class);
+                    throw new DescriptionImpossibleException(null, "message");
+                })
+                .isInstanceOf(NullPointerException.class);
     }
 }

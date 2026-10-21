@@ -18,7 +18,6 @@ import fr.troisil.audiodescription.agent.Description;
 import fr.troisil.audiodescription.agent.DescriptionImpossibleException;
 import fr.troisil.audiodescription.agent.DescriptionImpossibleException.Raison;
 import fr.troisil.audiodescription.agent.Image;
-
 import java.net.ConnectException;
 import java.net.SocketTimeoutException;
 import java.net.http.HttpTimeoutException;
@@ -61,14 +60,15 @@ public final class DescripteurLangChain4j implements DescripteurImage {
         return List.of(
                 SystemMessage.from(Consigne.SYSTEME),
                 UserMessage.from(
-                        TextContent.from(Consigne.demande(question)),
-                        ImageContent.from(base64, image.typeMime())));
+                        TextContent.from(Consigne.demande(question)), ImageContent.from(base64, image.typeMime())));
     }
 
     private String interroger(List<ChatMessage> messages) throws DescriptionImpossibleException {
         try {
             ChatResponse reponse = modele.chat(messages);
-            return reponse == null || reponse.aiMessage() == null ? null : reponse.aiMessage().text();
+            return reponse == null || reponse.aiMessage() == null
+                    ? null
+                    : reponse.aiMessage().text();
         } catch (RuntimeException e) {
             throw new DescriptionImpossibleException(raison(e), "Échec de l'appel au modèle : " + e.getMessage(), e);
         }

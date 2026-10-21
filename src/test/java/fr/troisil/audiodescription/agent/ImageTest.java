@@ -1,11 +1,11 @@
 package fr.troisil.audiodescription.agent;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class ImageTest {
 
@@ -61,8 +61,8 @@ class ImageTest {
 
     @Test
     void deuxImagesDeMemeContenuSontEgales() {
-        Image premiere = new Image(new byte[]{1, 2, 3}, "image/png");
-        Image seconde = new Image(new byte[]{1, 2, 3}, "image/png");
+        Image premiere = new Image(new byte[] {1, 2, 3}, "image/png");
+        Image seconde = new Image(new byte[] {1, 2, 3}, "image/png");
 
         assertThat(premiere).isEqualTo(seconde).hasSameHashCodeAs(seconde);
     }
