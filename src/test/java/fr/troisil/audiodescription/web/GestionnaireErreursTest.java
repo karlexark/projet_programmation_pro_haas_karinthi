@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
@@ -25,13 +26,15 @@ import static org.hamcrest.Matchers.not;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(DescriptionControleur.class)
-@Import(ValidateurImage.class)
+@Import({ValidateurImage.class, ValidateurQuestion.class})
 class GestionnaireErreursTest {
 
     private static final MockMultipartFile IMAGE_JPEG =
@@ -91,6 +94,41 @@ class GestionnaireErreursTest {
                 .andExpect(status().isInternalServerError())
                 .andExpect(jsonPath("$.code").value("INATTENDUE"))
                 .andExpect(content().string(not(containsString("NullPointer"))));
+    }
+
+    @Test
+    void uneRessourceIntrouvableDonne404EtNonUneErreurServeur() throws Exception {
+        mockMvc.perform(get("/favicon.ico"))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.code").value("REQUETE_INVALIDE"));
+    }
+
+    @Test
+    void uneMauvaiseMethodeDonne405() throws Exception {
+        mockMvc.perform(get("/api/descriptions"))
+                .andExpect(status().isMethodNotAllowed())
+                .andExpect(jsonPath("$.code").value("REQUETE_INVALIDE"));
+    }
+
+    @Test
+    void unFormatDeRequeteNonPrisEnChargeDonne415() throws Exception {
+        mockMvc.perform(post("/api/descriptions").contentType(MediaType.APPLICATION_JSON).content("{}"))
+                .andExpect(status().isUnsupportedMediaType())
+                .andExpect(jsonPath("$.code").value("REQUETE_INVALIDE"));
+
+        verifyNoInteractions(descripteur);
+    }
+
+    @Test
+    void uneQuestionTropLongueEstRefuseeAvantLAgent() throws Exception {
+        String question = "a".repeat(ValidateurQuestion.LONGUEUR_MAXIMALE + 1);
+
+        mockMvc.perform(multipart("/api/descriptions").file(IMAGE_JPEG).param("question", question))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.code").value("QUESTION_TROP_LONGUE"))
+                .andExpect(jsonPath("$.message").value(containsString("500 caractères au maximum")));
+
+        verifyNoInteractions(descripteur);
     }
 
     @Test

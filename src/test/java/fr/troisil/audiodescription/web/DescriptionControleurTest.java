@@ -24,7 +24,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(DescriptionControleur.class)
-@Import(ValidateurImage.class)
+@Import({ValidateurImage.class, ValidateurQuestion.class})
 class DescriptionControleurTest {
 
     private static final MockMultipartFile IMAGE_JPEG =

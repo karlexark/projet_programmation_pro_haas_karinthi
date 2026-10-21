@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.unit.DataSize;
+import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
@@ -42,6 +43,14 @@ public class GestionnaireErreurs {
         return reponse(HttpStatus.BAD_REQUEST, e.getMotif().name(), message);
     }
 
+    @ExceptionHandler(QuestionTropLongueException.class)
+    public ResponseEntity<ErreurReponse> questionTropLongue(QuestionTropLongueException e) {
+        JOURNAL.info("Question refusée : {}", e.getMessage());
+        return reponse(HttpStatus.BAD_REQUEST, "QUESTION_TROP_LONGUE",
+                "Votre question est trop longue : " + e.getLongueurMaximale()
+                        + " caractères au maximum. Raccourcissez-la, puis relancez la description.");
+    }
+
     @ExceptionHandler(MaxUploadSizeExceededException.class)
     public ResponseEntity<ErreurReponse> imageTropLourde(MaxUploadSizeExceededException e) {
         JOURNAL.info("Image trop lourde : {}", e.getMessage());
@@ -64,8 +73,21 @@ public class GestionnaireErreurs {
         };
     }
 
+    /**
+     * Toute autre exception.
+     * <p>
+     * Les exceptions web de Spring (ressource introuvable, méthode non autorisée, format de
+     * requête non pris en charge…) implémentent {@link ErrorResponse} et portent leur propre
+     * code HTTP : ce ne sont pas des pannes du serveur. On garde ce code, sans trace d'erreur
+     * dans les journaux. Seules les vraies erreurs inattendues donnent un 500.
+     */
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErreurReponse> inattendue(Exception e) {
+        if (e instanceof ErrorResponse erreurWeb) {
+            JOURNAL.debug("Requête refusée par Spring : {}", e.getMessage());
+            return ResponseEntity.status(erreurWeb.getStatusCode()).body(new ErreurReponse("REQUETE_INVALIDE",
+                    "La demande n'a pas pu être traitée. Rechargez la page, puis réessayez."));
+        }
         JOURNAL.error("Erreur inattendue", e);
         return erreurInattendue();
     }
