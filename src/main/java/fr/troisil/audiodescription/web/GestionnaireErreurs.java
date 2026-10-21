@@ -37,7 +37,8 @@ public class GestionnaireErreurs {
             case ABSENTE -> "Aucune image n'a été choisie. Choisissez une image, puis relancez la description.";
             case VIDE -> "Le fichier choisi est vide. Choisissez une autre image.";
             case FORMAT_NON_PRIS_EN_CHARGE ->
-                    "Ce fichier n'est pas une image que l'application sait lire. Choisissez une photo au format JPEG ou PNG.";
+                    "Ce fichier n'est pas une image que l'application sait lire. "
+                            + "Choisissez une photo au format JPEG ou PNG.";
             case ILLISIBLE -> "Le fichier n'a pas pu être lu. Choisissez-le de nouveau, ou essayez une autre image.";
         };
         return reponse(HttpStatus.BAD_REQUEST, e.getMotif().name(), message);
@@ -68,7 +69,8 @@ public class GestionnaireErreurs {
             case DELAI_DEPASSE -> reponse(HttpStatus.GATEWAY_TIMEOUT, e.getRaison().name(),
                     "L'analyse de l'image a pris trop de temps. Réessayez, ou choisissez une image plus simple.");
             case REPONSE_VIDE -> reponse(HttpStatus.BAD_GATEWAY, e.getRaison().name(),
-                    "Aucune description n'a pu être produite pour cette image. Réessayez, ou choisissez une autre image.");
+                    "Aucune description n'a pu être produite pour cette image. "
+                            + "Réessayez, ou choisissez une autre image.");
             case INCONNUE -> erreurInattendue();
         };
     }
@@ -94,7 +96,8 @@ public class GestionnaireErreurs {
 
     private static ResponseEntity<ErreurReponse> erreurInattendue() {
         return reponse(HttpStatus.INTERNAL_SERVER_ERROR, "INATTENDUE",
-                "Une erreur inattendue s'est produite. Réessayez ; si le problème continue, choisissez une autre image.");
+                "Une erreur inattendue s'est produite. "
+                        + "Réessayez ; si le problème continue, choisissez une autre image.");
     }
 
     private static ResponseEntity<ErreurReponse> reponse(HttpStatus statut, String code, String message) {

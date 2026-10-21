@@ -32,7 +32,8 @@ public final class FauxDescripteur implements DescripteurImage {
 
     static final String DESCRIPTION_FIXE =
             "Ceci est une description de démonstration. "
-                    + "L'image n'a pas été analysée : l'application fonctionne sans modèle d'intelligence artificielle.";
+                    + "L'image n'a pas été analysée : "
+                    + "l'application fonctionne sans modèle d'intelligence artificielle.";
 
     private final Duration delai;
     private final DescriptionImpossibleException.Raison echec;

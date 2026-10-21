@@ -4,6 +4,7 @@ plugins {
     id 'io.spring.dependency-management' version '1.1.7'
     id 'jacoco'
     id 'com.github.spotbugs' version '6.5.13'
+    id 'checkstyle'
 }
 
 group = 'fr.troisil'
@@ -88,4 +89,12 @@ tasks.withType(com.github.spotbugs.snom.SpotBugsTask).configureEach {
         html.required = true
         xml.required = true
     }
+}
+
+// Conventions d'écriture : règles dans config/checkstyle/checkstyle.xml,
+// rapport dans build/reports/checkstyle/main.html. Aucune infraction tolérée.
+checkstyle {
+    toolVersion = '14.3.0'
+    maxWarnings = 0
+    maxErrors = 0
 }
