@@ -2,7 +2,7 @@
 
 const URL_DESCRIPTION = "/api/descriptions";
 const MESSAGE_ATTENTE =
-    "Analyse de l'image en cours. Cela peut prendre jusqu'à une minute, merci de patienter.";
+    "Analyse de l'image en cours. Cela prend quelques secondes, et jusqu'à deux minutes la première fois. Merci de patienter.";
 const MESSAGE_SERVEUR_INJOIGNABLE =
     "Le serveur ne répond pas. Vérifiez votre connexion, puis réessayez.";
 const MESSAGE_SANS_IMAGE =
@@ -134,7 +134,8 @@ function afficherDescription(texte) {
     const paragraphe = document.createElement("p");
     paragraphe.textContent = texte;
     zoneDescription.replaceChildren(paragraphe);
-    apercu.alt = texte;
+    // La description est déjà lue juste au-dessus : la répéter ici la ferait lire deux fois.
+    apercu.alt = "Image choisie, décrite ci-dessus.";
     zoneActions.hidden = false;
     boutonRelire.hidden = !Voix.estDisponible();
     boutonArreter.hidden = !Voix.estDisponible();

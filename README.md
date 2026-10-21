@@ -53,7 +53,9 @@ ollama pull qwen2.5vl:7b
 
 ## Lancement
 
-Sous Windows (PowerShell), remplacer `./gradlew` par `.\gradlew`.
+Les commandes sont données pour un terminal Bash (Linux, macOS, Git Bash). Sous Windows PowerShell,
+remplacer `./gradlew` par `.\gradlew`, et définir une variable d'environnement avec `$env:NOM="valeur"`
+avant la commande (exemples ci-dessous).
 
 ### Avec le modèle (Ollama)
 
@@ -85,7 +87,8 @@ Le changement d'agent se fait sans modifier une ligne de Java. Trois façons éq
 |---|---|
 | Profil Spring | `./gradlew bootRun --args='--spring.profiles.active=faux'` |
 | Propriété | `./gradlew bootRun --args='--descripteur.fournisseur=faux'` |
-| Variable d'environnement | `DESCRIPTEUR_FOURNISSEUR=faux ./gradlew bootRun` |
+| Variable d'environnement (Bash) | `DESCRIPTEUR_FOURNISSEUR=faux ./gradlew bootRun` |
+| Variable d'environnement (PowerShell) | `$env:DESCRIPTEUR_FOURNISSEUR="faux"; .\gradlew bootRun` |
 
 Pour tester l'interface dans des conditions réalistes, la fausse implémentation peut simuler
 un délai ou une panne (dans `src/main/resources/application-faux.properties`) :
@@ -114,6 +117,15 @@ Pour essayer un autre modèle de vision (`gemma3:12b`, `llama3.2-vision:11b`…)
 ollama pull gemma3:12b
 OLLAMA_MODELE=gemma3:12b ./gradlew bootRun
 ```
+
+Sous PowerShell :
+
+```powershell
+ollama pull gemma3:12b
+$env:OLLAMA_MODELE="gemma3:12b"; .\gradlew bootRun
+```
+
+Une variable définie avec `$env:` reste active jusqu'à la fermeture du terminal PowerShell.
 
 ## Tests
 
