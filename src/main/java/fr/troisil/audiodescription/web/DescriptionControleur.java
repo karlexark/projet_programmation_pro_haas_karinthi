@@ -20,11 +20,15 @@ import org.springframework.web.multipart.MultipartFile;
 public class DescriptionControleur {
 
     private final DescripteurImage descripteur;
-    private final ValidateurImage validateur;
+    private final ValidateurImage validateurImage;
+    private final ValidateurQuestion validateurQuestion;
 
-    public DescriptionControleur(DescripteurImage descripteur, ValidateurImage validateur) {
+    public DescriptionControleur(DescripteurImage descripteur,
+                                 ValidateurImage validateurImage,
+                                 ValidateurQuestion validateurQuestion) {
         this.descripteur = descripteur;
-        this.validateur = validateur;
+        this.validateurImage = validateurImage;
+        this.validateurQuestion = validateurQuestion;
     }
 
     /**
@@ -32,6 +36,7 @@ public class DescriptionControleur {
      * @param question la question facultative ; vide ou absente, elle demande une description générale
      * @return la description, à afficher et à lire à voix haute
      * @throws ImageRefuseeException          si le fichier n'est pas une image valide
+     * @throws QuestionTropLongueException    si la question dépasse la longueur autorisée
      * @throws DescriptionImpossibleException si l'agent ne peut pas répondre
      */
     @PostMapping(path = "/api/descriptions",
@@ -41,16 +46,9 @@ public class DescriptionControleur {
             @RequestParam(name = "image", required = false) MultipartFile fichier,
             @RequestParam(name = "question", required = false) String question)
             throws DescriptionImpossibleException {
-        Image image = validateur.valider(fichier);
-        Description description = descripteur.decrire(image, normaliser(question));
+        Image image = validateurImage.valider(fichier);
+        String questionValidee = validateurQuestion.valider(question);
+        Description description = descripteur.decrire(image, questionValidee);
         return new DescriptionReponse(description.texte());
-    }
-
-    /** Une question vide ou faite d'espaces équivaut à une question absente. */
-    private static String normaliser(String question) {
-        if (question == null || question.isBlank()) {
-            return null;
-        }
-        return question.strip();
     }
 }

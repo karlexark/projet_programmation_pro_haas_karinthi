@@ -34,7 +34,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(DescriptionControleur.class)
-@Import(ValidateurImage.class)
+@Import({ValidateurImage.class, ValidateurQuestion.class})
 class GestionnaireErreursTest {
 
     private static final MockMultipartFile IMAGE_JPEG =
@@ -115,6 +115,18 @@ class GestionnaireErreursTest {
         mockMvc.perform(post("/api/descriptions").contentType(MediaType.APPLICATION_JSON).content("{}"))
                 .andExpect(status().isUnsupportedMediaType())
                 .andExpect(jsonPath("$.code").value("REQUETE_INVALIDE"));
+
+        verifyNoInteractions(descripteur);
+    }
+
+    @Test
+    void uneQuestionTropLongueEstRefuseeAvantLAgent() throws Exception {
+        String question = "a".repeat(ValidateurQuestion.LONGUEUR_MAXIMALE + 1);
+
+        mockMvc.perform(multipart("/api/descriptions").file(IMAGE_JPEG).param("question", question))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.code").value("QUESTION_TROP_LONGUE"))
+                .andExpect(jsonPath("$.message").value(containsString("500 caractères au maximum")));
 
         verifyNoInteractions(descripteur);
     }

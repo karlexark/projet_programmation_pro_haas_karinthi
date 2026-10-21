@@ -43,6 +43,14 @@ public class GestionnaireErreurs {
         return reponse(HttpStatus.BAD_REQUEST, e.getMotif().name(), message);
     }
 
+    @ExceptionHandler(QuestionTropLongueException.class)
+    public ResponseEntity<ErreurReponse> questionTropLongue(QuestionTropLongueException e) {
+        JOURNAL.info("Question refusée : {}", e.getMessage());
+        return reponse(HttpStatus.BAD_REQUEST, "QUESTION_TROP_LONGUE",
+                "Votre question est trop longue : " + e.getLongueurMaximale()
+                        + " caractères au maximum. Raccourcissez-la, puis relancez la description.");
+    }
+
     @ExceptionHandler(MaxUploadSizeExceededException.class)
     public ResponseEntity<ErreurReponse> imageTropLourde(MaxUploadSizeExceededException e) {
         JOURNAL.info("Image trop lourde : {}", e.getMessage());

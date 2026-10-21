@@ -106,6 +106,8 @@ function traiterEchec(corps) {
     afficherErreur(message);
     if (corps && ERREURS_DE_FICHIER.includes(corps.code)) {
         champImage.focus();
+    } else if (corps && corps.code === "QUESTION_TROP_LONGUE") {
+        champQuestion.focus();
     }
 }
 
