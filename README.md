@@ -127,15 +127,45 @@ $env:OLLAMA_MODELE="gemma3:12b"; .\gradlew bootRun
 
 Une variable définie avec `$env:` reste active jusqu'à la fermeture du terminal PowerShell.
 
-## Tests
+## Tests et qualité du code
+
+Une seule commande lance toutes les vérifications :
 
 ```bash
-./gradlew test
+./gradlew check
 ```
 
-Les tests ne demandent pas Ollama : le contrôleur est testé avec un agent simulé, et l'agent LangChain4J
-avec un modèle simulé et face à un faux serveur Ollama local (connexion refusée, délai dépassé, modèle absent).
-Le rapport détaillé est dans `build/reports/tests/test/index.html`.
+Elle échoue au moindre écart. Elle exécute :
+
+| Outil | Ce qu'il vérifie | Règle | Rapport |
+|---|---|---|---|
+| **JUnit 5** | le comportement (77 tests) | tous les tests passent | `build/reports/tests/test/index.html` |
+| **JaCoCo** | la couverture des tests | au moins 85 % des lignes et 75 % des branches | `build/reports/jacoco/test/html/index.html` |
+| **SpotBugs** | les bugs probables, dans le code compilé | aucun avertissement (effort maximal) | `build/reports/spotbugs/main.html` |
+| **Checkstyle** | les conventions d'écriture (nommage, Javadoc, accolades…) | aucune infraction | `build/reports/checkstyle/main.html` |
+| **Spotless** | la mise en forme (palantir-java-format) | code formaté | message dans la console |
+
+Couverture actuelle : 92 % des lignes, 82 % des branches.
+
+Les règles de Checkstyle sont propres au projet et justifiées dans
+[config/checkstyle/checkstyle.xml](config/checkstyle/checkstyle.xml).
+
+**Avant chaque commit**, mettre le code en forme automatiquement, puis vérifier :
+
+```bash
+./gradlew spotlessApply check
+```
+
+### Ce que couvrent les tests
+
+Les tests ne demandent pas Ollama :
+
+- les types du contrat (`Image`, `Description`, l'exception) : invariants, copie défensive, exception vérifiée ;
+- la validation de l'image (type annoncé et signature réelle) et de la question (longueur, question vide) ;
+- le contrôleur et la traduction des erreurs, avec un agent simulé (`@WebMvcTest`) ;
+- l'agent LangChain4J, avec un modèle simulé, et face à un faux serveur Ollama local
+  (réponse normale, connexion refusée, délai dépassé, modèle absent) ;
+- le choix de l'implémentation selon la propriété `descripteur.fournisseur`.
 
 La consigne envoyée au modèle a été réglée sur un jeu d'images dont le contenu est connu :
 voir [docs/evaluation-consigne.md](docs/evaluation-consigne.md).
