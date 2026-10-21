@@ -1,5 +1,20 @@
 package fr.troisil.audiodescription.web;
 
+import static fr.troisil.audiodescription.web.ImagesDeTest.JPEG;
+import static fr.troisil.audiodescription.web.ImagesDeTest.TEXTE;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.not;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verifyNoInteractions;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import fr.troisil.audiodescription.agent.DescripteurImage;
 import fr.troisil.audiodescription.agent.DescriptionImpossibleException;
 import fr.troisil.audiodescription.agent.DescriptionImpossibleException.Raison;
@@ -18,27 +33,11 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.util.unit.DataSize;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
-import static fr.troisil.audiodescription.web.ImagesDeTest.JPEG;
-import static fr.troisil.audiodescription.web.ImagesDeTest.TEXTE;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.not;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verifyNoInteractions;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 @WebMvcTest(DescriptionControleur.class)
 @Import({ValidateurImage.class, ValidateurQuestion.class})
 class GestionnaireErreursTest {
 
-    private static final MockMultipartFile IMAGE_JPEG =
-            new MockMultipartFile("image", "photo.jpg", "image/jpeg", JPEG);
+    private static final MockMultipartFile IMAGE_JPEG = new MockMultipartFile("image", "photo.jpg", "image/jpeg", JPEG);
 
     @Autowired
     private MockMvc mockMvc;
@@ -70,10 +69,10 @@ class GestionnaireErreursTest {
 
     @ParameterizedTest
     @CsvSource({
-            "AGENT_INDISPONIBLE, 503, AGENT_INDISPONIBLE",
-            "DELAI_DEPASSE,      504, DELAI_DEPASSE",
-            "REPONSE_VIDE,       502, REPONSE_VIDE",
-            "INCONNUE,           500, INATTENDUE"
+        "AGENT_INDISPONIBLE, 503, AGENT_INDISPONIBLE",
+        "DELAI_DEPASSE,      504, DELAI_DEPASSE",
+        "REPONSE_VIDE,       502, REPONSE_VIDE",
+        "INCONNUE,           500, INATTENDUE"
     })
     void chaquePanneDeLAgentDonneUnMessageAdapte(Raison raison, int statut, String code) throws Exception {
         when(descripteur.decrire(any(), any()))
@@ -112,7 +111,9 @@ class GestionnaireErreursTest {
 
     @Test
     void unFormatDeRequeteNonPrisEnChargeDonne415() throws Exception {
-        mockMvc.perform(post("/api/descriptions").contentType(MediaType.APPLICATION_JSON).content("{}"))
+        mockMvc.perform(post("/api/descriptions")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{}"))
                 .andExpect(status().isUnsupportedMediaType())
                 .andExpect(jsonPath("$.code").value("REQUETE_INVALIDE"));
 

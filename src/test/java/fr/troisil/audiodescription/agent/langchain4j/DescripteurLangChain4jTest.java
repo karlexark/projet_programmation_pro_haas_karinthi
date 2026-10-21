@@ -1,5 +1,12 @@
 package fr.troisil.audiodescription.agent.langchain4j;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import dev.langchain4j.data.message.AiMessage;
 import dev.langchain4j.data.message.ChatMessage;
 import dev.langchain4j.data.message.ImageContent;
@@ -16,21 +23,13 @@ import fr.troisil.audiodescription.agent.Description;
 import fr.troisil.audiodescription.agent.DescriptionImpossibleException;
 import fr.troisil.audiodescription.agent.DescriptionImpossibleException.Raison;
 import fr.troisil.audiodescription.agent.Image;
+import java.net.ConnectException;
+import java.util.Base64;
+import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.ArgumentCaptor;
-
-import java.net.ConnectException;
-import java.util.Base64;
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.anyList;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 class DescripteurLangChain4jTest {
 
@@ -72,8 +71,7 @@ class DescripteurLangChain4jTest {
         descripteur.decrire(IMAGE, "Quelle est la date de péremption ?");
 
         UserMessage demande = (UserMessage) messagesEnvoyes().get(1);
-        assertThat(((TextContent) demande.contents().get(0)).text())
-                .contains("« Quelle est la date de péremption ? »");
+        assertThat(((TextContent) demande.contents().get(0)).text()).contains("« Quelle est la date de péremption ? »");
     }
 
     @ParameterizedTest
@@ -121,7 +119,9 @@ class DescripteurLangChain4jTest {
     }
 
     private void repondre(String texte) {
-        when(modele.chat(anyList())).thenReturn(ChatResponse.builder().aiMessage(AiMessage.from(texte)).build());
+        when(modele.chat(anyList()))
+                .thenReturn(
+                        ChatResponse.builder().aiMessage(AiMessage.from(texte)).build());
     }
 
     @SuppressWarnings("unchecked")

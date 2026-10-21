@@ -2,13 +2,12 @@ package fr.troisil.audiodescription.web;
 
 import fr.troisil.audiodescription.agent.Image;
 import fr.troisil.audiodescription.web.ImageRefuseeException.Motif;
-import org.springframework.stereotype.Component;
-import org.springframework.web.multipart.MultipartFile;
-
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.Optional;
+import org.springframework.stereotype.Component;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * Vérifie le fichier envoyé par l'utilisateur et le transforme en {@link Image}.
@@ -30,9 +29,8 @@ public class ValidateurImage {
 
     /** Formats acceptés, avec la signature (premiers octets) de leur contenu. */
     private static final Map<String, byte[]> SIGNATURES = Map.of(
-            "image/jpeg", new byte[]{(byte) 0xFF, (byte) 0xD8, (byte) 0xFF},
-            "image/png", new byte[]{(byte) 0x89, 'P', 'N', 'G', '\r', '\n', 0x1A, '\n'}
-    );
+            "image/jpeg", new byte[] {(byte) 0xFF, (byte) 0xD8, (byte) 0xFF},
+            "image/png", new byte[] {(byte) 0x89, 'P', 'N', 'G', '\r', '\n', 0x1A, '\n'});
 
     /**
      * @param fichier le fichier reçu, éventuellement null
@@ -49,12 +47,13 @@ public class ValidateurImage {
         }
         String typeAnnonce = fichier.getContentType();
         if (typeAnnonce == null || !SIGNATURES.containsKey(typeAnnonce)) {
-            throw new ImageRefuseeException(Motif.FORMAT_NON_PRIS_EN_CHARGE,
-                    "Type annoncé non pris en charge : " + typeAnnonce);
+            throw new ImageRefuseeException(
+                    Motif.FORMAT_NON_PRIS_EN_CHARGE, "Type annoncé non pris en charge : " + typeAnnonce);
         }
         byte[] octets = lire(fichier);
-        String typeReel = detecterType(octets).orElseThrow(() -> new ImageRefuseeException(
-                Motif.FORMAT_NON_PRIS_EN_CHARGE, "Le contenu ne correspond à aucun format pris en charge"));
+        String typeReel = detecterType(octets)
+                .orElseThrow(() -> new ImageRefuseeException(
+                        Motif.FORMAT_NON_PRIS_EN_CHARGE, "Le contenu ne correspond à aucun format pris en charge"));
         return new Image(octets, typeReel);
     }
 

@@ -1,14 +1,14 @@
 package fr.troisil.audiodescription.agent.langchain4j.ollama;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
 import com.sun.net.httpserver.HttpServer;
 import fr.troisil.audiodescription.agent.Description;
 import fr.troisil.audiodescription.agent.DescriptionImpossibleException;
 import fr.troisil.audiodescription.agent.DescriptionImpossibleException.Raison;
 import fr.troisil.audiodescription.agent.Image;
 import fr.troisil.audiodescription.agent.langchain4j.DescripteurLangChain4j;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Test;
-
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
@@ -17,9 +17,8 @@ import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.Base64;
 import java.util.concurrent.atomic.AtomicReference;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Vérifie l'adaptateur avec le vrai client LangChain4J, face à un faux serveur Ollama local.

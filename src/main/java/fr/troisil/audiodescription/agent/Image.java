@@ -44,9 +44,7 @@ public record Image(byte[] octets, String typeMime) {
 
     @Override
     public boolean equals(Object autre) {
-        return autre instanceof Image image
-                && Arrays.equals(octets, image.octets)
-                && typeMime.equals(image.typeMime);
+        return autre instanceof Image image && Arrays.equals(octets, image.octets) && typeMime.equals(image.typeMime);
     }
 
     @Override

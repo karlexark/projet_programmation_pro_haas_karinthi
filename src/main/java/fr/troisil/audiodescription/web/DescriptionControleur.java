@@ -23,9 +23,8 @@ public class DescriptionControleur {
     private final ValidateurImage validateurImage;
     private final ValidateurQuestion validateurQuestion;
 
-    public DescriptionControleur(DescripteurImage descripteur,
-                                 ValidateurImage validateurImage,
-                                 ValidateurQuestion validateurQuestion) {
+    public DescriptionControleur(
+            DescripteurImage descripteur, ValidateurImage validateurImage, ValidateurQuestion validateurQuestion) {
         this.descripteur = descripteur;
         this.validateurImage = validateurImage;
         this.validateurQuestion = validateurQuestion;
@@ -39,7 +38,8 @@ public class DescriptionControleur {
      * @throws QuestionTropLongueException    si la question dépasse la longueur autorisée
      * @throws DescriptionImpossibleException si l'agent ne peut pas répondre
      */
-    @PostMapping(path = "/api/descriptions",
+    @PostMapping(
+            path = "/api/descriptions",
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public DescriptionReponse decrire(

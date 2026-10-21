@@ -5,5 +5,4 @@ package fr.troisil.audiodescription.web;
  *
  * @param texte la description ou la réponse à la question, à afficher et à lire
  */
-public record DescriptionReponse(String texte) {
-}
+public record DescriptionReponse(String texte) {}

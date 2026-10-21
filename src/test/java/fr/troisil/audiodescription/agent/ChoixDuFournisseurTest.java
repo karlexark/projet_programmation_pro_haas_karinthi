@@ -1,13 +1,13 @@
 package fr.troisil.audiodescription.agent;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import fr.troisil.audiodescription.agent.faux.FauxDescripteur;
 import fr.troisil.audiodescription.agent.langchain4j.DescripteurLangChain4j;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Le fournisseur de l'agent se choisit par la propriété {@code descripteur.fournisseur},

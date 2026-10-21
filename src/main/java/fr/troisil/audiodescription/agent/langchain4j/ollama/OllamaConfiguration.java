@@ -4,12 +4,11 @@ import dev.langchain4j.model.chat.ChatModel;
 import dev.langchain4j.model.ollama.OllamaChatModel;
 import fr.troisil.audiodescription.agent.DescripteurImage;
 import fr.troisil.audiodescription.agent.langchain4j.DescripteurLangChain4j;
+import java.time.Duration;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
-import java.time.Duration;
 
 /**
  * Fournisseur Ollama : actif quand {@code descripteur.fournisseur=ollama} (valeur par défaut).

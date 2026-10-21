@@ -1,13 +1,13 @@
 package fr.troisil.audiodescription.web;
 
+import static fr.troisil.audiodescription.web.ValidateurQuestion.LONGUEUR_MAXIMALE;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
-
-import static fr.troisil.audiodescription.web.ValidateurQuestion.LONGUEUR_MAXIMALE;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class ValidateurQuestionTest {
 
@@ -43,7 +43,6 @@ class ValidateurQuestionTest {
     void refuseUneQuestionTropLongue() {
         String question = "a".repeat(LONGUEUR_MAXIMALE + 1);
 
-        assertThatThrownBy(() -> validateur.valider(question))
-                .isInstanceOf(QuestionTropLongueException.class);
+        assertThatThrownBy(() -> validateur.valider(question)).isInstanceOf(QuestionTropLongueException.class);
     }
 }
