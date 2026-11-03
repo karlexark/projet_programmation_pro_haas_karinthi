@@ -24,6 +24,8 @@ repositories {
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'dev.langchain4j:langchain4j-ollama:1.21.0'
+    // Exécution des outils de l'agent (DefaultToolExecutor)
+    implementation 'dev.langchain4j:langchain4j:1.21.0'
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
