@@ -1,6 +1,6 @@
 # Évaluation de la consigne envoyée au modèle
 
-Modèle : `qwen2.5vl:7b` (Ollama, en local sur une RTX 4080), température 0,1.
+Modèle : `qwen2.5vl:7b` (Ollama, en local sur une RTX 4080), température 0,1. Voir aussi la mise à jour du 3 novembre en fin de document (outil de date, passage à `qwen3.5:9b`).
 Date : 15 octobre 2026.
 
 ## Protocole
@@ -44,8 +44,63 @@ Les images ne sont pas versionnées (dossier `image_test/`, ignoré par Git).
 5. **Questions sans réponse** : le modèle reconnaît qu'il ne peut pas donner le nom du stade,
    au lieu d'en inventer un.
 
-## Pistes
+## Pistes (octobre)
 
 - Essayer un modèle plus grand ou différent (`gemma3:12b`, `llama3.2-vision:11b`) sur les mêmes cas :
   le choix du modèle se fait dans `application.properties`, sans modifier le code.
 - Répéter chaque cas plusieurs fois pour mesurer un taux de réussite plutôt qu'un résultat unique.
+
+---
+
+# Mise à jour du 3 novembre : un outil pour l'agent, et un nouveau modèle
+
+## Pourquoi changer de modèle
+
+L'agent dispose désormais d'un outil, `dateEtHeureActuelles` : un modèle ne connaît pas la date du jour,
+et sans outil il la devinerait. L'outil permet de répondre à « Ce yaourt est-il périmé ? ».
+
+`qwen2.5vl:7b` **ne sait pas appeler d'outil** (capacités annoncées par Ollama : `completion`, `vision`).
+Trois modèles de vision avec outils tenant dans 12 Go ont été comparés :
+
+| Modèle | Constat | Retenu |
+|---|---|---|
+| `qwen3-vl:8b` | c'est en fait la variante « thinking » : elle raisonne avant chaque réponse, même avec `think: false` ; 10 à 57 s par réponse, deux réponses vides et une coupée (contexte de 4096 jetons dépassé) | non |
+| `qwen3-vl:8b-instruct` | variante sans raisonnement | non essayé |
+| **`qwen3.5:9b`** | `think: false` coupe bien le raisonnement ; **1 à 3 s** par réponse ; l'image ne coûte que 565 jetons ; 5,9 Go en mémoire vidéo | **oui** |
+
+Le contexte est porté à 8192 jetons (propriété `descripteur.ollama.contexte`) : avec celui d'Ollama
+par défaut (4096), l'image, la consigne, la description de l'outil et la réponse ne tenaient pas toujours.
+
+## Résultats avec `qwen3.5:9b`
+
+Treize cas : les onze d'octobre, plus « Ce yaourt est-il périmé ? » et « Quel jour sommes-nous ? »
+(posée sur l'image du panneau). Les cas sensibles à l'outil ont été passés deux fois.
+
+| Cas | Résultat |
+|---|---|
+| « Quel est le Nutri-Score ? » | **« Le Nutri-Score est B. »** (2 sur 2) — `qwen2.5vl` répondait toujours A |
+| « Quelle est la date de péremption ? » | « 18/08/24 » (2 sur 2) |
+| « Ce yaourt est-il périmé ? » | l'outil est appelé, puis « périmé, car la date indiquée est le 18 août 2024 et nous sommes en novembre 2026 » (2 sur 2) |
+| « Quel jour sommes-nous ? » | l'outil est appelé une fois sur deux ; l'autre fois, le modèle dit ne pas pouvoir répondre (sans inventer de date) |
+| Panneau, pomme « iPod », lampe | justes ; « RANDONNEURS » et « iPod » cités |
+| Scène de rue | plus d'invention de conversation ; l'homme « regarde par-dessus son épaule » |
+| Stade, description générale | **texte inventé** : « AVIGNON », « GDF SUEZ » au lieu de « AVEYRON », « Occitanie » |
+
+## Réglage de la consigne pour l'outil
+
+- Première version de la règle (« si la réponse dépend du jour, par exemple d'une date de péremption,
+  appelle l'outil ») : le modèle appelait l'outil **trop souvent**, et à « Quel est le Nutri-Score ? »
+  il répondait sur la date de péremption.
+- Règle retenue : appeler l'outil **uniquement** quand la question porte sur le jour ou l'heure présents,
+  ou demande si une date est passée ; et « réponds exactement à la question posée ». L'outil n'est
+  plus appelé hors de propos, et le Nutri-Score est de nouveau bien lu.
+
+## Constats
+
+1. Le choix du modèle a plus d'effet que la consigne : `qwen3.5:9b` lit correctement le Nutri-Score,
+   ce qu'aucune consigne n'avait obtenu de `qwen2.5vl`.
+2. Le nom d'un modèle ne garantit pas son comportement : `qwen3-vl:8b` est une variante qui raisonne
+   toujours ; il faut vérifier (capacités annoncées, temps de réponse, jetons consommés).
+3. Une règle de consigne sur un outil se règle comme le reste : trop large, l'outil est appelé à tort ;
+   trop stricte, il ne l'est plus. Le changement de modèle s'est fait sans modifier le code de l'agent
+   ni le contrôleur : seule la propriété `descripteur.ollama.modele` a changé.

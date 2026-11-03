@@ -24,6 +24,11 @@ final class Consigne {
             évidence : plus grande, encadrée ou détachée des autres.
             - Pour les personnes, décris la position, le regard et les gestes visibles. \
             Ne nomme une émotion que si l'expression du visage est nette.
+            - Tu ne connais pas la date du jour : ne la devine jamais. Appelle l'outil qui donne la date \
+            et l'heure actuelles uniquement quand la question porte sur le jour ou l'heure présents, \
+            ou demande si une date est déjà passée (« est-il périmé ? »). Pour toute autre question, \
+            n'appelle pas l'outil.
+            - Réponds exactement à la question posée, sans parler d'autre chose.
             """;
 
     /** La demande quand l'utilisateur ne pose pas de question. */
@@ -35,7 +40,8 @@ final class Consigne {
 
     /** Les instructions qui suivent la question de l'utilisateur. */
     static final String REPONSE_A_LA_QUESTION = """
-            Réponds à cette question en une ou deux phrases, à partir de ce que montre l'image. \
+            Réponds à cette question en une ou deux phrases, à partir de ce que montre l'image \
+            (ou de l'outil de date, si elle porte sur le jour ou l'heure présents). \
             Ne décris pas le reste de l'image. \
             Si l'image ne permet pas de répondre avec certitude, dis-le simplement.\
             """;

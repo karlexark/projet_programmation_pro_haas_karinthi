@@ -4,7 +4,10 @@ import dev.langchain4j.model.chat.ChatModel;
 import dev.langchain4j.model.ollama.OllamaChatModel;
 import fr.troisil.audiodescription.agent.DescripteurImage;
 import fr.troisil.audiodescription.agent.langchain4j.DescripteurLangChain4j;
+import fr.troisil.audiodescription.agent.langchain4j.OutilsAgent;
+import java.time.Clock;
 import java.time.Duration;
+import java.time.ZoneId;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
@@ -26,12 +29,18 @@ public class OllamaConfiguration {
             @Value("${descripteur.ollama.url}") String url,
             @Value("${descripteur.ollama.modele}") String modele,
             @Value("${descripteur.ollama.timeout}") Duration delai,
-            @Value("${descripteur.ollama.temperature}") double temperature) {
+            @Value("${descripteur.ollama.temperature}") double temperature,
+            @Value("${descripteur.ollama.contexte}") int tailleContexte) {
         return OllamaChatModel.builder()
                 .baseUrl(url)
                 .modelName(modele)
                 .timeout(delai)
                 .temperature(temperature)
+                // L'image occupe à elle seule un millier de jetons : avec le contexte par défaut
+                // d'Ollama (4096), la consigne, l'outil et la réponse ne tiennent pas toujours.
+                .numCtx(tailleContexte)
+                // Pas de raisonnement préalable : il allongerait chaque réponse de plusieurs secondes.
+                .think(false)
                 // Pas de nouvel essai automatique : avec un modèle lent, l'utilisateur
                 // attendrait plusieurs fois le délai avant d'être prévenu.
                 .maxRetries(0)
@@ -39,7 +48,8 @@ public class OllamaConfiguration {
     }
 
     @Bean
-    public DescripteurImage descripteurOllama(ChatModel modeleOllama) {
-        return new DescripteurLangChain4j(modeleOllama);
+    public DescripteurImage descripteurOllama(
+            ChatModel modeleOllama, @Value("${descripteur.fuseau-horaire}") ZoneId fuseauHoraire) {
+        return new DescripteurLangChain4j(modeleOllama, new OutilsAgent(Clock.system(fuseauHoraire)));
     }
 }
